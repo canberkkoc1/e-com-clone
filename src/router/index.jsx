@@ -1,3 +1,4 @@
+import Admin from "../pages/Admin";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -17,5 +18,10 @@ export const routes = [
     path: "register",
     component: <Register />,
     title: "Register",
+  },
+  {
+    path: "dashboard",
+    component: <Admin />,
+    title: "Dashboard",
   },
 ];

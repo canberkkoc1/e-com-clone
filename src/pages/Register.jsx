@@ -24,7 +24,7 @@ function Register() {
 
   const navigate = useNavigate();
 
-  const { signUp, user } = UserAuth();
+  const { signUp } = UserAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
