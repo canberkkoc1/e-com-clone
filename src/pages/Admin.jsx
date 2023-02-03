@@ -7,6 +7,7 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
+import uuid from "react-uuid";
 
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
@@ -15,6 +16,7 @@ import { UserAuth } from "../context/AuthContext";
 
 function Admin() {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [category, setCategory] = useState("");
   const [productsInfo, setProductsInfo] = useState({
     title: "",
     price: "",
@@ -44,6 +46,12 @@ function Admin() {
     debugger;
     console.log(selectedFile);
 
+    await addDoc(collection(db, "category"), {
+      id: uuid(),
+      category: category,
+      timestamp: serverTimestamp(),
+    });
+
     const docRef = await addDoc(collection(db, "products"), {
       id: user.uid,
       title: productsInfo.title,
@@ -63,13 +71,13 @@ function Admin() {
       });
     }
 
-    setLoading(false);
-    setSelectedFile(null);
     setProductsInfo({
       title: "",
       price: "",
       description: "",
     });
+    setSelectedFile(null);
+    setLoading(false);
   };
 
   return (
@@ -93,12 +101,28 @@ function Admin() {
                         name="product_name"
                         id="product_name"
                         className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300"
-                        placeholder="Product Name"
                         onChange={(e) => {
                           setProductsInfo({
                             ...productsInfo,
                             title: e.target.value,
                           });
+                        }}
+                      />
+                    </div>
+                    <div className="">
+                      <label
+                        htmlFor="category"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Create Category
+                      </label>
+                      <input
+                        type="text"
+                        name="category"
+                        id="category"
+                        className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300"
+                        onChange={(e) => {
+                          setCategory(e.target.value);
                         }}
                       />
                     </div>
@@ -118,7 +142,6 @@ function Admin() {
                       name="about"
                       rows="3"
                       className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
-                      placeholder="product description"
                       onChange={(e) => {
                         setProductsInfo({
                           ...productsInfo,
@@ -136,7 +159,6 @@ function Admin() {
                   <input
                     type="text"
                     className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300"
-                    placeholder="Cost"
                     onChange={(e) => {
                       setProductsInfo({
                         ...productsInfo,
