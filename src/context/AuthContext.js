@@ -13,37 +13,21 @@ export const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  const signUp = (email, password) => {
+  const signUp = (email, password, name) => {
     createUserWithEmailAndPassword(auth, email, password);
 
-    /* setDoc(doc(db, "NetflixUsers", email), {
-      savedShows: [],
-    }); */
-
-    /*  .catch(error => {
-              return error
-          }) */
+    // create user in firestore for user shopping cart
+    setDoc(doc(db, "userInfo", email), {
+      userName: name,
+    });
   };
 
   const signIn = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
-    /* .then(currentUser => {
-              setUser(currentUser)
-          }).catch(error => {
-              return error
-          }) */
   };
 
   const handleSignOut = () => {
     return signOut(auth);
-
-    /* .then(() => {
-              setUser(null)
-            }).catch((error) => {
-              // An error happened.
-              return error
-          });
-           */
   };
 
   useEffect(() => {

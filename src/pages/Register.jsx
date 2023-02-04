@@ -29,7 +29,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signUp(userInfo.email, userInfo.password);
+      await signUp(userInfo.email, userInfo.password, userInfo.fullname);
       navigate("/");
     } catch (error) {
       console.error(error);

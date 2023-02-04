@@ -1,11 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { BiUserCircle } from "react-icons/bi";
 import { BsBookmarkHeart } from "react-icons/bs";
 import { BiShoppingBag } from "react-icons/bi";
-import { FcLike } from "react-icons/fc";
 import { motion } from "framer-motion";
+import { UserAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const [openMenu, setOpenMenu] = useState(false);
+  const { user } = UserAuth();
+
+  const { handleSignOut } = UserAuth();
+
+  const navigate = useNavigate();
+
+  const signOut = async () => {
+    try {
+      await handleSignOut();
+      window.location.reload(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <header className="w-full fixed  bg-black border-b border-black">
       <nav className="bg-white border-gray-200 py-2.5">
@@ -96,51 +113,43 @@ function Navbar() {
               whileTap={{ scale: 0.9 }}
               type="button"
               data-dropdown-toggle="dropdown"
+              onClick={() => {
+                setOpenMenu(!openMenu);
+              }}
             >
               <BiUserCircle className="w-10 h-8" />
             </motion.button>
-            <div className="hidden bg-white text-base z-50 list-none divide-y divide-gray-100 rounded shadow my-4">
-              <div className="px-4 py-3">
-                <span className="block text-sm">Bonnie Green</span>
-                <span className="block text-sm font-medium text-gray-900 truncate">
-                  name@flowbite.com
-                </span>
-              </div>
-              <ul className="py-1" aria-labelledby="dropdown">
-                <li>
+            {/* open user menü */}
+            {openMenu && (
+              <div className="absolute right-10 top-14 w-48 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
+                <div className="px-4 py-3">
+                  <p className="text-sm text-gray-500">Signed in as</p>
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {user?.email}
+                  </p>
+                </div>
+                <div className="py-1">
                   <a
                     href="#"
-                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                   >
-                    Dashboard
+                    Your Profile
                   </a>
-                </li>
-                <li>
                   <a
                     href="#"
-                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                   >
                     Settings
                   </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2"
-                  >
-                    Earnings
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2"
+                  <button
+                    onClick={signOut}
+                    className="block w-full border-t-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                   >
                     Sign out
-                  </a>
-                </li>
-              </ul>
-            </div>
+                  </button>
+                </div>
+              </div>
+            )}
 
             <motion.button whileTap={{ scale: 0.9 }} className="relative">
               <span className="bg-red-400 rounded-full w-4 h-4 text-white absolute text-xs top-[-10px] right-0">
