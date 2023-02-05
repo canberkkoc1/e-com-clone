@@ -12,7 +12,6 @@ export const CategoriesContextProvider = ({ children }) => {
   useEffect(() => {
     const getCategories = async () => {
       const querySnapshot = await getDocs(collection(db, "category"));
-      debugger;
       const categories = querySnapshot.docs.map((doc) => doc.data());
       setCategories(categories[0]);
     };

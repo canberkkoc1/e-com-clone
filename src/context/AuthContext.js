@@ -12,8 +12,9 @@ export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const signUp = (email, password, name) => {
+  const signUp = async (email, password, name) => {
     createUserWithEmailAndPassword(auth, email, password);
 
     // create user in firestore for user shopping cart
@@ -22,7 +23,7 @@ export const AuthContextProvider = ({ children }) => {
     });
   };
 
-  const signIn = (email, password) => {
+  const signIn = async (email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -31,21 +32,25 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-      }
+    const getUser = async () => {
+      await onAuthStateChanged(auth, (currentUser) => {
+        if (currentUser) {
+          setUser(currentUser);
+          setLoading(false);
+        }
+      });
+    };
 
-      return () => {
-        unsubscribe();
-      };
-    });
+    const subscribe = getUser();
+
+    return () => subscribe;
   });
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        loading,
         signUp,
         signIn,
         handleSignOut,

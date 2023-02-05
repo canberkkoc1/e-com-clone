@@ -12,10 +12,8 @@ import { CategoriesContextProvider } from "./context/Categories";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <AuthContextProvider>
-    <CategoriesContextProvider>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    </CategoriesContextProvider>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
   </AuthContextProvider>
 );

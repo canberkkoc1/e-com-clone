@@ -10,13 +10,16 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const { signIn } = UserAuth();
+  const { signIn, user } = UserAuth();
+
+  console.log(user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       await signIn(userInfo.email, userInfo.password);
+
       navigate("/");
     } catch (error) {
       console.log(error);

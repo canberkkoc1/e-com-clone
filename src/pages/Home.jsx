@@ -1,17 +1,18 @@
 import React from "react";
 import Navbar from "../components/Navbar";
+import Slider from "../components/Slider";
 import { UserAuth } from "../context/AuthContext";
 import { useCategories } from "../context/Categories";
 
 function Home() {
-  /*  const { user } = UserAuth();
-  const { categories } = useCategories();
+  const { user } = UserAuth();
 
-  console.log(categories.category); */
+  console.log(user);
 
   return (
     <div>
       <Navbar />
+      <Slider />
     </div>
   );
 }

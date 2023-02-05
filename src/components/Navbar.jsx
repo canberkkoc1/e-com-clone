@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BiUserCircle } from "react-icons/bi";
 import { BsBookmarkHeart } from "react-icons/bs";
 import { BiShoppingBag } from "react-icons/bi";
 import { motion } from "framer-motion";
 import { UserAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Logo from "../img/iconShop.png";
 
 function Navbar() {
   const [openMenu, setOpenMenu] = useState(false);
@@ -14,22 +15,36 @@ function Navbar() {
 
   const navigate = useNavigate();
 
+  const ref = useRef();
+
   const signOut = async () => {
     try {
       await handleSignOut();
-      window.location.reload(true);
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
   };
 
+  // close menu when click outside
+  useEffect(() => {
+    const closeMenu = (e) => {
+      if (openMenu && ref.current && !ref.current.contains(e.target)) {
+        setOpenMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeMenu);
+
+    return () => document.removeEventListener("mousedown", closeMenu);
+  }, [openMenu]);
+
   return (
-    <header className="w-full fixed  bg-black border-b border-black">
+    <header className="w-full   bg-black border-b border-black">
       <nav className="bg-white border-gray-200 py-2.5">
         <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
-          <a href="">
-            <img src="" alt="Logo" />
-            <span>Canberk</span>
+          <a href="/">
+            <img src={Logo} alt="Logo" />
           </a>
           <div className="flex items-center lg:order-2">
             <button
@@ -74,8 +89,8 @@ function Navbar() {
             <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
               <li>
                 <a
-                  href="#"
-                  className="block py-2 pl-3 pr-4 text-white bg-purple-700 rounded lg:bg-transparent lg:text-purple-700 lg:p-0 dark:text-white"
+                  href="/"
+                  className="block py-2 pl-3 pr-4 text-white bg-green-700 rounded lg:bg-transparent lg:text-green-700 lg:p-0 dark:text-white"
                   aria-current="page"
                 >
                   Home
@@ -83,24 +98,24 @@ function Navbar() {
               </li>
               <li>
                 <a
-                  href="#"
-                  className="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-purple dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                  href="/man"
+                  className="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-green-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-purple dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   Man
                 </a>
               </li>
               <li>
                 <a
-                  href="#"
-                  className="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-purple-600 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-purple dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                  href="/woman"
+                  className="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-purple-600 lg:hover:bg-transparent lg:border-0 lg:hover:text-green-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-purple dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   Woman
                 </a>
               </li>
               <li>
                 <a
-                  href="#"
-                  className="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-purple dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                  href="/kids"
+                  className="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-green-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-purple dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   Kids
                 </a>
@@ -113,30 +128,31 @@ function Navbar() {
               whileTap={{ scale: 0.9 }}
               type="button"
               data-dropdown-toggle="dropdown"
-              onClick={() => {
-                setOpenMenu(!openMenu);
-              }}
+              onClick={() => setOpenMenu(!openMenu)}
             >
               <BiUserCircle className="w-10 h-8" />
             </motion.button>
             {/* open user menü */}
             {openMenu && (
-              <div className="absolute right-10 top-14 w-48 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
+              <div
+                ref={ref}
+                className="absolute right-10 top-14 w-48 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none"
+              >
                 <div className="px-4 py-3">
                   <p className="text-sm text-gray-500">Signed in as</p>
                   <p className="text-sm font-medium text-gray-900 truncate">
                     {user?.email}
                   </p>
                 </div>
-                <div className="py-1">
+                <div className="py-1" id="menu">
                   <a
-                    href="#"
+                    href="/userprofile"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                   >
                     Your Profile
                   </a>
                   <a
-                    href="#"
+                    href="settings"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                   >
                     Settings
