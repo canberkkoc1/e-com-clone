@@ -8,19 +8,24 @@ export const CategoriesContext = createContext();
 // get data from firebase
 export const CategoriesContextProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const getCategories = async () => {
       const querySnapshot = await getDocs(collection(db, "category"));
-      const categories = querySnapshot.docs.map((doc) => doc.data());
-      setCategories(categories[0]);
+      await querySnapshot.forEach((doc) => {
+        setCategories((prev) => [...prev, doc.data().category]);
+        console.log(doc.data().category);
+      });
+      setLoading(false);
     };
 
     getCategories();
+
+    return () => getCategories();
   }, []);
 
   return (
-    <CategoriesContext.Provider value={{ categories }}>
+    <CategoriesContext.Provider value={{ categories, loading }}>
       {children}
     </CategoriesContext.Provider>
   );
