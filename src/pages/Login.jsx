@@ -12,8 +12,6 @@ function Login() {
 
   const { signIn, user } = UserAuth();
 
-  console.log(user);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 

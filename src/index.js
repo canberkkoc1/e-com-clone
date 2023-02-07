@@ -7,15 +7,15 @@ import { Provider } from "react-redux";
 import { ApiProvider } from "@reduxjs/toolkit/query/react";
 import { apiProduct } from "./redux/apiProduct";
 import { AuthContextProvider } from "./context/AuthContext";
-import { CategoriesContextProvider } from "./context/Categories";
+import { BestSellerContextProvider } from "./context/BestSeller";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <AuthContextProvider>
-    <CategoriesContextProvider>
+    <BestSellerContextProvider>
       <React.StrictMode>
         <App />
       </React.StrictMode>
-    </CategoriesContextProvider>
+    </BestSellerContextProvider>
   </AuthContextProvider>
 );

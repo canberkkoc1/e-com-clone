@@ -6,9 +6,12 @@ import { motion } from "framer-motion";
 import { UserAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Logo from "../img/iconShop.png";
+import { db } from "../firebase/config";
+import { collection, onSnapshot, query } from "firebase/firestore";
 
 function Navbar() {
   const [openMenu, setOpenMenu] = useState(false);
+  const [likes, setLikes] = useState([]);
   const { user } = UserAuth();
 
   const { handleSignOut } = UserAuth();
@@ -16,6 +19,16 @@ function Navbar() {
   const navigate = useNavigate();
 
   const ref = useRef();
+  debugger;
+  useEffect(() => {
+    onSnapshot(
+      query(collection(db, "userInfo", user?.email, "likes")),
+      (snapshot) => {
+        setLikes(snapshot.docs.map((doc) => doc.data()));
+        console.log("snapshot", snapshot);
+      }
+    );
+  }, [db]);
 
   const signOut = async () => {
     try {
@@ -169,7 +182,7 @@ function Navbar() {
 
             <motion.button whileTap={{ scale: 0.9 }} className="relative">
               <span className="bg-red-400 rounded-full w-4 h-4 text-white absolute text-xs top-[-10px] right-0">
-                1
+                {likes.length}
               </span>
               <BsBookmarkHeart className="w-8 h-6" />
             </motion.button>
