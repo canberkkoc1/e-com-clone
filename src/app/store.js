@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiProduct } from "../redux/apiProduct";
 import userReducer from "../redux/userSlice";
+import likesReducer from "../redux/likesSlice";
 
 /* export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ import userReducer from "../redux/userSlice";
 export const store = configureStore({
   reducer: {
     user: userReducer,
+    likes: likesReducer,
   },
 });

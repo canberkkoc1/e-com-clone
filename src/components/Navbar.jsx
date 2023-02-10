@@ -4,28 +4,38 @@ import { BsBookmarkHeart } from "react-icons/bs";
 import { BiShoppingBag } from "react-icons/bi";
 import { motion } from "framer-motion";
 import { UserAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../img/iconShop.png";
 import { db } from "../firebase/config";
 import { collection, onSnapshot, query } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { addLike } from "../redux/likesSlice";
+import secureLocalStorage from "react-secure-storage";
+import { createAction } from "@reduxjs/toolkit";
+import { UseCarts } from "../context/GetCarts";
 
 function Navbar() {
   const [openMenu, setOpenMenu] = useState(false);
   const [likes, setLikes] = useState([]);
   const { user } = UserAuth();
 
+  const { carts } = UseCarts();
+
+  debugger;
+
   const { handleSignOut } = UserAuth();
 
   const navigate = useNavigate();
 
-  const ref = useRef();
   debugger;
+  const userEmail = secureLocalStorage.getItem("user");
+
+  const ref = useRef();
   useEffect(() => {
     onSnapshot(
-      query(collection(db, "userInfo", user?.email, "likes")),
+      query(collection(db, "userInfo", user?.email || userEmail, "likes")),
       (snapshot) => {
         setLikes(snapshot.docs.map((doc) => doc.data()));
-        console.log("snapshot", snapshot);
       }
     );
   }, [db]);
@@ -181,13 +191,30 @@ function Navbar() {
             )}
 
             <motion.button whileTap={{ scale: 0.9 }} className="relative">
-              <span className="bg-red-400 rounded-full w-4 h-4 text-white absolute text-xs top-[-10px] right-0">
-                {likes.length}
-              </span>
-              <BsBookmarkHeart className="w-8 h-6" />
+              <Link
+                to={`/likes/${user?.uid.slice(0, 5)}`}
+                state={{
+                  likes: likes,
+                }}
+              >
+                <span className="bg-red-400 rounded-full w-4 h-4 text-white absolute text-xs top-[-10px] right-0">
+                  {likes.length}
+                </span>
+                <BsBookmarkHeart className="w-8 h-6" />
+              </Link>
             </motion.button>
-            <motion.button whileTap={{ scale: 0.9 }}>
-              <BiShoppingBag className="w-10 h-8" />
+            <motion.button whileTap={{ scale: 0.9 }} className="relative">
+              <Link
+                to={`/cart/${user?.uid.slice(0, 5)}`}
+                state={{
+                  carts: carts,
+                }}
+              >
+                <span className="bg-red-400 rounded-full w-4 h-4 text-white absolute text-xs top-[-5px] right-1">
+                  {carts?.length}
+                </span>
+                <BiShoppingBag className="w-10 h-8" />
+              </Link>
             </motion.button>
           </div>
         </div>

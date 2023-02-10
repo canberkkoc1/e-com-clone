@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { UserAuth } from "../context/AuthContext";
 import { db } from "../firebase/config";
+import { useDispatch } from "react-redux";
 
 function ProductCard({ bestSeller, loading }) {
   const [isFav, setIsFav] = useState(false);
@@ -25,7 +26,6 @@ function ProductCard({ bestSeller, loading }) {
       query(collection(db, "userInfo", user?.email, "likes")),
       (snapshot) => {
         setLikes(snapshot.docs.map((doc) => doc.data()));
-        console.log("snapshot", snapshot);
       }
     );
   }, [db]);

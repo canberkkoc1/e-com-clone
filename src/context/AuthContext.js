@@ -7,6 +7,7 @@ import {
 import { createContext, useContext, useEffect, useState } from "react";
 import { setDoc, doc } from "firebase/firestore";
 import { auth, db } from "../firebase/config";
+import secureLocalStorage from "react-secure-storage";
 
 export const AuthContext = createContext();
 
@@ -28,6 +29,7 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const handleSignOut = () => {
+    secureLocalStorage.removeItem("user");
     return signOut(auth);
   };
 
@@ -36,6 +38,7 @@ export const AuthContextProvider = ({ children }) => {
       await onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
           setUser(currentUser);
+          secureLocalStorage.setItem("user", currentUser.email);
           setLoading(false);
         }
       });
@@ -44,7 +47,7 @@ export const AuthContextProvider = ({ children }) => {
     const subscribe = getUser();
 
     return () => subscribe;
-  });
+  }, []);
 
   return (
     <AuthContext.Provider

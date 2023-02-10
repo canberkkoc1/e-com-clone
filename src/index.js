@@ -8,14 +8,18 @@ import { ApiProvider } from "@reduxjs/toolkit/query/react";
 import { apiProduct } from "./redux/apiProduct";
 import { AuthContextProvider } from "./context/AuthContext";
 import { BestSellerContextProvider } from "./context/BestSeller";
+import { LikesContextProvider } from "./context/Likes";
+import { CartsContextProvider } from "./context/GetCarts";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <AuthContextProvider>
-    <BestSellerContextProvider>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    </BestSellerContextProvider>
-  </AuthContextProvider>
+  <Provider store={store}>
+    <AuthContextProvider>
+      <BestSellerContextProvider>
+        <CartsContextProvider>
+          <App />
+        </CartsContextProvider>
+      </BestSellerContextProvider>
+    </AuthContextProvider>
+  </Provider>
 );
