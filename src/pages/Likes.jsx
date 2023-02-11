@@ -35,6 +35,7 @@ function LikesPage(props) {
         image: productByID.image,
         title: productByID.title,
         price: productByID.price,
+        stock: 1,
       });
 
       // delete item in likes
@@ -46,7 +47,6 @@ function LikesPage(props) {
     }
   };
 
-  debugger;
   return (
     <>
       <Navbar />

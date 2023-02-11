@@ -10,7 +10,6 @@ export const CartsContextProvider = ({ children }) => {
   const userEmail = secureLocalStorage.getItem("user");
   const [carts, setCarts] = useState([]);
   const [loading, setLoading] = useState(true);
-  debugger;
   useEffect(() => {
     onSnapshot(
       query(collection(db, "userInfo", userEmail, "cart")),

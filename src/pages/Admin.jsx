@@ -41,18 +41,13 @@ function Admin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await addDoc(collection(db, "category"), {
-      id: uuid(),
-      category: category,
-      timestamp: serverTimestamp(),
-    });
-
     const docRef = await addDoc(collection(db, "products"), {
       id: uuid(),
       title: productsInfo.title,
       price: productsInfo.price,
       description: productsInfo.description,
       timestamp: serverTimestamp(),
+      category: category,
     });
 
     const imageRef = ref(storage, `images/${docRef.id}`);

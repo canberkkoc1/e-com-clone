@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
-import { FaCartPlus } from "react-icons/fa";
+
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import { BsFillCartCheckFill } from "react-icons/bs";
 import {
   collection,
   deleteDoc,
@@ -13,13 +15,23 @@ import {
 } from "firebase/firestore";
 import { UserAuth } from "../context/AuthContext";
 import { db } from "../firebase/config";
-import { useDispatch } from "react-redux";
 
-function ProductCard({ bestSeller, loading }) {
+function ProductCard({ items, loading }) {
   const [isFav, setIsFav] = useState(false);
   const [likes, setLikes] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [isAdded, setIsAdded] = useState(false);
 
   const { user } = UserAuth();
+
+  useEffect(() => {
+    onSnapshot(
+      query(collection(db, "userInfo", user?.email, "cart")),
+      (snapshot) => {
+        setCart(snapshot.docs.map((doc) => doc.data()));
+      }
+    );
+  }, [db]);
 
   useEffect(() => {
     onSnapshot(
@@ -32,7 +44,7 @@ function ProductCard({ bestSeller, loading }) {
 
   const addToLikes = async (id) => {
     setIsFav(!isFav);
-    const productByID = bestSeller.find((item) => item.id === id);
+    const productByID = items.find((item) => item.id === id);
     if (!isFav) {
       try {
         await setDoc(doc(db, "userInfo", user?.email, "likes", id), {
@@ -55,10 +67,43 @@ function ProductCard({ bestSeller, loading }) {
     }
   };
 
+  debugger;
+  // add to cart
+  const addToCart = async (id) => {
+    const productByID = items.find((item) => item.id === id);
+    setIsAdded(!isAdded);
+    if (!isAdded) {
+      try {
+        await setDoc(doc(db, "userInfo", user?.email, "cart", id), {
+          id: id,
+          image: productByID.image,
+          title: productByID.title,
+          price: productByID.price,
+          stock: 1,
+        });
+
+        setIsAdded(true);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        // db query with id to delete the doc
+        //const query = await query(collection(db,"userInfo",user?.email,"likes",user?.uid),where())
+        await deleteDoc(doc(db, "userInfo", user?.email, "cart", id));
+        setIsAdded(false);
+      } catch (error) {
+        alert(error);
+      }
+    }
+  };
+
+  debugger;
+
   return (
     <>
       {!loading &&
-        bestSeller.map((item) => (
+        items?.map((item) => (
           <article className="relative" key={item.id}>
             <div className="aspect-square overflow-hidden group">
               <img
@@ -78,8 +123,15 @@ function ProductCard({ bestSeller, loading }) {
                     <MdFavoriteBorder className="h-6 w-6 text-pink-600" />
                   )}
                 </button>
-                <button className="bg-white rounded-full p-2 ml-4">
-                  <FaCartPlus className="h-6 w-6 text-pink-600" />
+                <button
+                  className="bg-white rounded-full p-2 ml-4"
+                  onClick={() => addToCart(item.id)}
+                >
+                  {cart.find((cartItem) => cartItem.id === item.id) ? (
+                    <BsFillCartCheckFill className="h-6 w-6 text-pink-600" />
+                  ) : (
+                    <AiOutlineShoppingCart className="h-6 w-6 text-pink-600" />
+                  )}
                 </button>
               </div>
             </div>

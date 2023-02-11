@@ -9,7 +9,6 @@ export const likesContext = createContext();
 export const LikesContextProvider = ({ children }) => {
   const [likes, setLikes] = useState([]);
   const [loading, setLoading] = useState(true);
-  debugger;
   const { user } = UserAuth();
 
   useEffect(() => {
