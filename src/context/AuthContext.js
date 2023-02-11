@@ -14,6 +14,7 @@ export const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  debugger;
 
   const signUp = async (email, password, name) => {
     createUserWithEmailAndPassword(auth, email, password);
@@ -25,6 +26,7 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const signIn = async (email, password) => {
+    secureLocalStorage.setItem("user", email);
     return signInWithEmailAndPassword(auth, email, password);
   };
 

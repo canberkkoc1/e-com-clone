@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import secureLocalStorage from "react-secure-storage";
 import { routes } from ".";
 import AuthGuard from "../guard/AuthGuard";
 import RoleGuard from "../guard/RoleGuard";

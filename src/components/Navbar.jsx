@@ -8,10 +8,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Logo from "../img/iconShop.png";
 import { db } from "../firebase/config";
 import { collection, onSnapshot, query } from "firebase/firestore";
-import { useDispatch } from "react-redux";
-import { addLike } from "../redux/likesSlice";
+
 import secureLocalStorage from "react-secure-storage";
-import { createAction } from "@reduxjs/toolkit";
 import { UseCarts } from "../context/GetCarts";
 
 function Navbar() {

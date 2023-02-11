@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { UserAuth } from "../context/AuthContext";
 import { db } from "../firebase/config";
+import secureLocalStorage from "react-secure-storage";
 
 function ProductCard({ items, loading }) {
   const [isFav, setIsFav] = useState(false);
@@ -22,11 +23,13 @@ function ProductCard({ items, loading }) {
   const [cart, setCart] = useState([]);
   const [isAdded, setIsAdded] = useState(false);
 
+  const userEmail = secureLocalStorage.getItem("user");
+
   const { user } = UserAuth();
 
   useEffect(() => {
     onSnapshot(
-      query(collection(db, "userInfo", user?.email, "cart")),
+      query(collection(db, "userInfo", user?.email || userEmail, "cart")),
       (snapshot) => {
         setCart(snapshot.docs.map((doc) => doc.data()));
       }
@@ -35,7 +38,7 @@ function ProductCard({ items, loading }) {
 
   useEffect(() => {
     onSnapshot(
-      query(collection(db, "userInfo", user?.email, "likes")),
+      query(collection(db, "userInfo", user?.email || userEmail, "likes")),
       (snapshot) => {
         setLikes(snapshot.docs.map((doc) => doc.data()));
       }
@@ -47,12 +50,15 @@ function ProductCard({ items, loading }) {
     const productByID = items.find((item) => item.id === id);
     if (!isFav) {
       try {
-        await setDoc(doc(db, "userInfo", user?.email, "likes", id), {
-          id: productByID.id,
-          image: productByID.image,
-          title: productByID.title,
-          price: productByID.price,
-        });
+        await setDoc(
+          doc(db, "userInfo", user?.email || userEmail, "likes", id),
+          {
+            id: productByID.id,
+            image: productByID.image,
+            title: productByID.title,
+            price: productByID.price,
+          }
+        );
       } catch (error) {
         console.log(error);
       }

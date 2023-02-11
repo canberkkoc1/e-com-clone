@@ -5,7 +5,7 @@ import Slider from "../components/Slider";
 import { UserAuth } from "../context/AuthContext";
 
 function Home() {
-  const { user } = UserAuth();
+  debugger;
 
   return (
     <div>
